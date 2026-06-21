@@ -1,6 +1,4 @@
-Here is the exact code to paste into the main text editor area for index.js:
 
-JavaScript
 const express = require('express');
 const crypto = require('crypto');
 const app = express();

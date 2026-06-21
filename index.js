@@ -25,10 +25,15 @@ app.post('/api/interactions', (req, res) => {
     
     if (!signature || !timestamp) return res.status(401).send('Missing signatures');
 
+    // Cryptographic validation using raw hex keys
     const isValid = crypto.verify(
         null, 
         Buffer.concat([Buffer.from(timestamp), req.rawBody]), 
-        Buffer.from(DISCORD_PUBLIC_KEY, 'hex'), 
+        {
+            key: Buffer.from(DISCORD_PUBLIC_KEY, 'hex'),
+            format: 'raw',
+            type: 'public'
+        }, 
         Buffer.from(signature, 'hex')
     );
     if (!isValid) return res.status(401).send('Invalid request signature');

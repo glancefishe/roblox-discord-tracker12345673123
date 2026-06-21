@@ -1,4 +1,3 @@
-
 const express = require('express');
 const crypto = require('crypto');
 const app = express();
@@ -8,7 +7,7 @@ app.use(express.json({
 }));
 
 const ROBLOX_SECRET = "YourSuperSecretPassword123";
-const DISCORD_PUBLIC_KEY = "9426f01c17edc22e410cb43f0d387d12527a344d1d4af76333b24c71ee38d84d"; // Paste your Public Key from Dev Portal here
+const DISCORD_PUBLIC_KEY = "9426f01c17edc22e410cb43f0d387d12527a344d1d4af76333b24c71ee38d84d"; 
 let trackingCache = {}; 
 
 // 1. ROBLOX INCOMING DATA ENDPOINT
@@ -23,9 +22,11 @@ app.post('/api/update-data', (req, res) => {
 app.post('/api/interactions', (req, res) => {
     const signature = req.headers['x-signature-ed25519'];
     const timestamp = req.headers['x-signature-timestamp'];
+    
+    // Validate request signature from Discord
     const isValid = crypto.verify(
         null, 
-        req.rawBody, 
+        Buffer.concat([Buffer.from(timestamp), req.rawBody]), 
         Buffer.from(DISCORD_PUBLIC_KEY, 'hex'), 
         Buffer.from(signature, 'hex')
     );
@@ -68,4 +69,4 @@ app.post('/api/interactions', (req, res) => {
     }
 });
 
-app.listen(process.env.PORT || 3000, () => console.log('App system ready'));ff
+app.listen(process.env.PORT || 3000, () => console.log('App system ready'));

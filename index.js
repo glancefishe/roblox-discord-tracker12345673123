@@ -23,7 +23,8 @@ app.post('/api/interactions', (req, res) => {
     const signature = req.headers['x-signature-ed25519'];
     const timestamp = req.headers['x-signature-timestamp'];
     
-    // Validate request signature from Discord
+    if (!signature || !timestamp) return res.status(401).send('Missing signatures');
+
     const isValid = crypto.verify(
         null, 
         Buffer.concat([Buffer.from(timestamp), req.rawBody]), 
@@ -51,17 +52,19 @@ app.post('/api/interactions', (req, res) => {
             });
         }
 
+        const itemsText = foundPlayer.inventory.join(', ') || 'No items';
+
         return res.status(200).json({
             type: 4,
             data: {
                 embeds: [{
-                    color: 0x5865F2,
-                    title: `🔍 Profile Tracker: ${foundPlayer.displayName} (@${foundPlayer.username})`,
+                    color: 5793266,
+                    title: `🔍 Profile Tracker: ${foundPlayer.displayName}`,
                     fields: [
+                        { name: 'Username', value: `@${foundPlayer.username}`, inline: true },
                         { name: 'User ID', value: `${foundPlayer.userId}`, inline: true },
-                        { name: 'In-Game Balance', value: `🪙 ${foundPlayer.cash}`, inline: true },
-                        { name: 'Inventory Assets', value: foundPlayer.inventory.length > 0 ? `\`\`\`${foundPlayer.inventory.join(', ')}\`\`\`` : '```No items
-```' }
+                        { name: 'Balance', value: `🪙 ${foundPlayer.cash}`, inline: true },
+                        { name: 'Inventory Assets', value: itemsText, inline: false }
                     ]
                 }]
             }

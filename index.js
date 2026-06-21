@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const { verifyKey } = require('discord-interactions');
 
-const DISCORD_PUBLIC_KEY = "9426f01c17edc22e410cb43f0d387d12527a344d1d4af76333b24c71ee38d84d";
+const DISCORD_PUBLIC_KEY = "40cdc673dc778ec008f6d8674c356a9770b2294852b1e0805dba652df951fe2c";
 
 app.use(express.json({
     verify: (req, res, buf) => { req.rawBody = buf; }
